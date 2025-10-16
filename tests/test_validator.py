@@ -1,27 +1,36 @@
-# to run these, run 
-# make tests
+"""Unit tests for the ValidHtml validator."""
 
-from guardrails import Guard
 import pytest
-from validator import ValidatorTemplate
 
-# We use 'exception' as the validator's fail action,
-#  so we expect failures to always raise an Exception
-# Learn more about corrective actions here:
-#  https://www.guardrailsai.com/docs/concepts/output/#%EF%B8%8F-specifying-corrective-actions
-guard = Guard.from_string(validators=[ValidatorTemplate(arg_1="arg_1", arg_2="arg_2", on_fail="exception")])
+from guardrails.validator_base import FailResult, PassResult
 
-def test_pass():
-  test_output = "pass"
-  result = guard.parse(test_output)
-  
-  assert result.validation_passed is True
-  assert result.validated_output == test_output
+from validator import ValidHtml
 
-def test_fail():
-  with pytest.raises(Exception) as exc_info:
-    test_output = "fail"
-    guard.parse(test_output)
-  
-  # Assert the exception has your error_message
-  assert str(exc_info.value) == "Validation failed for field with errors: {A descriptive but concise error message about why validation failed}"
+
+def test_valid_string_passes() -> None:
+    validator = ValidHtml()
+    result = validator.validate("<h1>Hello</h1>", {})
+
+    assert isinstance(result, PassResult)
+
+
+def test_invalid_string_fails() -> None:
+    validator = ValidHtml()
+    result = validator.validate("<div><span></div", {})
+
+    assert isinstance(result, FailResult)
+
+
+@pytest.mark.parametrize("value", [None, 123, ["<p>bad</p>"]])
+def test_non_string_inputs_fail(value: object) -> None:
+    validator = ValidHtml()
+    result = validator.validate(value, {})
+
+    assert isinstance(result, FailResult)
+
+
+def test_malformed_tag_fails() -> None:
+    validator = ValidHtml()
+    result = validator.validate("<phello</p>", {})
+
+    assert isinstance(result, FailResult)

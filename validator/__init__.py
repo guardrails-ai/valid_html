@@ -1,3 +1,3 @@
-from .main import ValidatorTemplate
+from .main import ValidHtml
 
-__all__ = ["ValidatorTemplate"]
+__all__ = ["ValidHtml"]
