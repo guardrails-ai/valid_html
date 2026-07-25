@@ -1,3 +1,24 @@
+# ⚠️ This validator has moved
+
+This validator now lives in the [Guardrails Hub monorepo](https://github.com/guardrails-ai/guardrails-hub-monorepo/tree/main/valid_html).
+**This repository is archived and no longer maintained** — please open issues and pull
+requests on the monorepo instead.
+
+```bash
+pip install guardrails-ai-valid-html
+```
+
+```python
+from guardrails import Guard
+from guardrails_ai.valid_html import ValidHtml
+
+guard = Guard().use(ValidHtml)
+```
+
+The registered validator name is unchanged, so existing guards keep working.
+
+---
+
 # Overview
 
 | Developed by | Alejandro Esquivel |
